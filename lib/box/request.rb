@@ -1,19 +1,21 @@
 require 'uri'
 require 'net/http'
 require 'json'
+require 'active_support/all'
 
 module Box
   class Request
 
-    attr_reader :method, :opts
+    attr_reader :params, :opts, :encrypt
 
-    def self.for(method, opts)
-      new(method, opts).post.body
+    def self.for(params, opts, encrypt = false)
+      new(params, opts, encrypt).post.body
     end
 
-    def initialize(method, opts)
-      @method = method
+    def initialize(params, opts, encrypt)
+      @params = params
       @opts = opts
+      @encrypt = encrypt
     end
 
     def post
@@ -40,7 +42,7 @@ module Box
     end
 
     def query
-      "method=#{method}"
+      params.to_query
     end
 
     def uri
@@ -52,11 +54,15 @@ module Box
     end
 
     def headers
-      { 'Content-Type' => 'application/json' }
+      { 'Content-Type' => 'text/plain' }
     end
 
     def payload
-      opts.to_json
+      if encrypt
+        Box::Cryptor.encrypt opts.to_json
+      else
+        opts.to_json
+      end
     end
   end
 end
