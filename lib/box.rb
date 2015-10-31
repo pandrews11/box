@@ -4,6 +4,8 @@ require './box/response'
 require './box/user'
 require './box/cryptor'
 require './box/server'
-
+require './box/song'
 require './box/station'
-require './box/station_collector'
+
+require './box/collectors'
+require './box/stations'

@@ -3,22 +3,22 @@ require 'json'
 module Box
   class Response
 
-    attr_reader :opts
+    attr_reader :data
 
-    def self.for(opts)
-      new(JSON.parse(opts))
+    def self.for(data)
+      new(JSON.parse(data))
     end
 
-    def initialize(opts)
-      @opts = opts
+    def initialize(data)
+      @data = data
     end
 
     def success?
-      opts['stat'] == 'ok'
+      data['stat'] == 'ok'
     end
 
     def result
-      opts['result']
+      data['result']
     end
 
     def method_missing(method_sym, *arguments, &block)

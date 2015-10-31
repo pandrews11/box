@@ -17,7 +17,6 @@ module Box
       @opts = opts
       @encrypt = req_opts[:encrypt]
       @secure = req_opts[:secure]
-
     end
 
     def post

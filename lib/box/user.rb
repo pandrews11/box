@@ -1,7 +1,9 @@
+require_relative 'collectors'
+
 module Box
   class User
-    attr_reader :username, :password
-    attr_accessor :response
+
+    attr_reader :username, :password, :data
 
     def self.login(username, password)
       new(username, password).login
@@ -13,12 +15,12 @@ module Box
     end
 
     def login
-      @response ||= Server.post params, opts, request_opts
+      @data ||= Server.post params, opts, request_opts
       self
     end
 
     def stations
-      @stations ||= StationCollector.for self
+      @stations ||= Collectors::StationCollector.for self
     end
 
     def partner
@@ -36,7 +38,7 @@ module Box
     end
 
     def method_missing(method_sym, *arguments, &block)
-      self.response.send(method_sym)
+      self.data.send(method_sym)
     end
 
     def partner_auth_token
