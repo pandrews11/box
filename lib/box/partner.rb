@@ -8,7 +8,7 @@ module Box
     end
 
     def login
-      @response ||= Box::Response.for(Box::Request.for params, opts, false)
+      @response ||= Server.post params, opts, request_opts
       self
     end
 
@@ -16,6 +16,10 @@ module Box
 
     def method_missing(method_sym, *arguments, &block)
       self.response.send(method_sym)
+    end
+
+    def request_opts
+      { :secure => true, :encrypt => false }
     end
 
     def params

@@ -3,6 +3,8 @@ require 'json'
 module Box
   class Response
 
+    attr_reader :opts
+
     def self.for(opts)
       new(JSON.parse(opts))
     end
@@ -11,22 +13,20 @@ module Box
       @opts = opts
     end
 
-    def status
-      @opts['stat'] == 'ok'
+    def success?
+      opts['stat'] == 'ok'
+    end
+
+    def result
+      opts['result']
     end
 
     def method_missing(method_sym, *arguments, &block)
-      if @opts['result'][method_sym.to_s]
-        return @opts['result'][method_sym.to_s]
+      if result[method_sym.to_s]
+        return result[method_sym.to_s]
       end
 
       super
-    end
-
-    private
-
-    def opts
-      @opts
     end
   end
 end

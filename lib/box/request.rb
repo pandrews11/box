@@ -6,16 +6,18 @@ require 'active_support/all'
 module Box
   class Request
 
-    attr_reader :params, :opts, :encrypt
+    attr_reader :params, :opts, :encrypt, :secure
 
-    def self.for(params, opts, encrypt = false)
-      new(params, opts, encrypt).post.body
+    def self.for(params, opts, req_opts)
+      new(params, opts, req_opts).post.body
     end
 
-    def initialize(params, opts, encrypt)
+    def initialize(params, opts, req_opts)
       @params = params
       @opts = opts
-      @encrypt = encrypt
+      @encrypt = req_opts[:encrypt]
+      @secure = req_opts[:secure]
+
     end
 
     def post
@@ -46,7 +48,19 @@ module Box
     end
 
     def uri
+      secure? ? secure_uri : insecure_uri
+    end
+
+    def secure_uri
       URI::HTTPS.build :host => host, :path => path, :query => query
+    end
+
+    def insecure_uri
+      URI::HTTP.build :host => host, :path => path, :query => query
+    end
+
+    def secure?
+      !!secure
     end
 
     def scheme
@@ -57,8 +71,12 @@ module Box
       { 'Content-Type' => 'text/plain' }
     end
 
+    def encrypt?
+      !!encrypt
+    end
+
     def payload
-      if encrypt
+      if encrypt?
         Box::Cryptor.encrypt opts.to_json
       else
         opts.to_json

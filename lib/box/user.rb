@@ -13,22 +13,30 @@ module Box
     end
 
     def login
-      @response ||= Box::Response.for(Box::Request.for params, opts, true)
+      @response ||= Server.post params, opts, request_opts
       self
     end
 
     def stations
+      @stations ||= StationCollector.for self
+    end
 
+    def partner
+      @partner ||= Partner.login
+    end
+
+    def sync_time
+      Cryptor.decrypt(partner.syncTime)[4..-1].to_i
     end
 
     private
 
-    def method_missing(method_sym, *arguments, &block)
-      self.response.send(method_sym)
+    def request_opts
+      {:encrypt => true, :secure => true}
     end
 
-    def partner
-      @partner ||= Box::Partner.login
+    def method_missing(method_sym, *arguments, &block)
+      self.response.send(method_sym)
     end
 
     def partner_auth_token
@@ -37,10 +45,6 @@ module Box
 
     def partner_id
       partner.partnerId
-    end
-
-    def sync_time
-      Box::Cryptor.decrypt(partner.syncTime)[4..-1].to_i
     end
 
     def params
