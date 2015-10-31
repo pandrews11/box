@@ -14,15 +14,29 @@ module Box
       end
 
       def retrieve_stations
-        @data ||= Server.post params, opts, request_opts
+        return [] if error?
 
         stations = []
 
-        @data.result['stations'].each do |s|
+        data['stations'].each do |s|
           stations << Station.create(s, user)
         end
 
         stations
+      end
+
+      private
+
+      def error?
+          user.error = response.error if response.error?
+      end
+
+      def response
+        @response ||= Server.post params, opts, request_opts
+      end
+
+      def data
+        response.result
       end
 
       def request_opts
@@ -32,15 +46,15 @@ module Box
       def params
         {
           :method => 'user.getStationList' ,
-          :user_id => user.userId,
-          :partner_id => user.partner.partnerId,
-          :auth_token => user.userAuthToken
+          :user_id => user.user_id,
+          :partner_id => user.partner.partner_id,
+          :auth_token => user.user_auth_token
         }
       end
 
       def opts
         {
-          :userAuthToken => user.userAuthToken,
+          :userAuthToken => user.user_auth_token,
           :syncTime => Time.now.to_i - user.sync_time
         }
       end

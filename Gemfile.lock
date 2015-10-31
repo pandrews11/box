@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    box (0.0.0)
+    box (0.1.0)
       activesupport
       crypt
 
@@ -42,6 +42,7 @@ PLATFORMS
 
 DEPENDENCIES
   box!
+  bundler
   rake
   rspec
 

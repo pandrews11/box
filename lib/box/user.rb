@@ -3,20 +3,19 @@ require_relative 'collectors'
 module Box
   class User
 
-    attr_reader :username, :password, :data
+    attr_reader :username, :password, :data, :response
+    attr_writer :error
 
     def self.login(username, password)
-      new(username, password).login
+      new(username, password)
     end
 
     def initialize(username, password)
       @username = username
       @password = password
-    end
 
-    def login
-      @data ||= Server.post params, opts, request_opts
-      self
+      @response ||= Server.post(params, opts, request_opts)
+      @data ||= @response.result
     end
 
     def stations
@@ -28,7 +27,37 @@ module Box
     end
 
     def sync_time
-      Cryptor.decrypt(partner.syncTime)[4..-1].to_i
+      Cryptor.decrypt(partner.sync_time)[4..-1].to_i
+    end
+
+    def user_auth_token
+      @user_auth_token ||= data['userAuthToken']
+    end
+
+    def has_audio_ads
+      @has_audio_ads ||= data['hasAudioAds']
+    end
+    alias_method :has_audio_ads?, :has_audio_ads
+
+    def user_id
+      @user_id ||= data['userId']
+    end
+
+    def max_stations_allowed
+      @max_stations_allowed ||= data['maxStationsAllowed']
+    end
+
+    def user_profile_url
+      @user_profile_url ||= data['userProfileUrl']
+    end
+
+    def can_listen
+      @can_listen ||= data['canListen']
+    end
+    alias_method :can_listen?, :can_listen
+
+    def error
+      @error ||@response.error
     end
 
     private
@@ -37,23 +66,11 @@ module Box
       {:encrypt => true, :secure => true}
     end
 
-    def method_missing(method_sym, *arguments, &block)
-      self.data.send(method_sym)
-    end
-
-    def partner_auth_token
-      partner.partnerAuthToken
-    end
-
-    def partner_id
-      partner.partnerId
-    end
-
     def params
       {
         :method => 'auth.userLogin',
-        :partner_id => partner_id,
-        :auth_token => partner_auth_token
+        :partner_id => partner.partner_id,
+        :auth_token => partner.partner_auth_token
       }
     end
 
@@ -62,7 +79,7 @@ module Box
         :loginType => 'user',
         :username => username,
         :password => password,
-        :partnerAuthToken => partner_auth_token,
+        :partnerAuthToken => partner.partner_auth_token,
         :syncTime => Time.now.to_i - sync_time
       }
     end

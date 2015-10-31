@@ -18,17 +18,17 @@ module Box
       def playlist_params
         {
           :method => 'station.getPlaylist',
-          :user_id =>user.userId,
-          :partner_id => user.partner.partnerId,
-          :auth_token => user.userAuthToken
+          :user_id =>user.user_id,
+          :partner_id => user.partner.partner_id,
+          :auth_token => user.user_auth_token
         }
       end
 
       def playlist_opts
         {
-          :userAuthToken => user.userAuthToken,
+          :userAuthToken => user.user_auth_token,
           :syncTime => Time.now.to_i - user.sync_time,
-          :stationToken => stationToken
+          :stationToken => station_token
         }
       end
 

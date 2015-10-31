@@ -6,6 +6,7 @@ require 'box/cryptor'
 require 'box/server'
 require 'box/song'
 require 'box/station'
+require 'box/error'
 
 require 'box/collectors'
 require 'box/stations'

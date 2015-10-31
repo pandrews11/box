@@ -1,22 +1,41 @@
 module Box
   class Partner
 
-    attr_accessor :response
+    extend Forwardable
+    def_delegator :@response, :error, :error
+
+    attr_reader :data, :response
 
     def self.login
-      new.login
+      new
     end
 
-    def login
-      @response ||= Server.post params, opts, request_opts
-      self
+    def initialize
+      @response ||= Server.post(params, opts, request_opts)
+      @data ||= @response.result
+    end
+
+    def station_skip_limit
+      @station_skip_limit ||= data['stationSkipLimit']
+    end
+
+    def partner_id
+      @partner_id ||= data['partnerId']
+    end
+
+    def partner_auth_token
+      @partner_auth_token ||= data['partnerAuthToken']
+    end
+
+    def sync_time
+      @sync_time ||= data['syncTime']
+    end
+
+    def station_skip_unit
+      @station_skip_unit ||= data['stationSkipUnit']
     end
 
     private
-
-    def method_missing(method_sym, *arguments, &block)
-      self.response.send(method_sym)
-    end
 
     def request_opts
       { :secure => true, :encrypt => false }

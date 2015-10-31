@@ -18,17 +18,17 @@ module Box
       def delete_params
         {
           :method => 'station.deleteStation',
-          :user_id => user.userId,
-          :partner_id => user.partner.partnerId,
-          :auth_token => user.userAuthToken
+          :user_id => user.user_id,
+          :partner_id => user.partner.partner_id,
+          :auth_token => user.user_auth_token
         }
       end
 
       def delete_opts
         {
-          :userAuthToken => user.userAuthToken,
+          :userAuthToken => user.user_auth_token,
           :sync_time => Time.now.to_i - user.sync_time,
-          :stationToken => stationToken
+          :stationToken => station_token
         }
       end
     end
