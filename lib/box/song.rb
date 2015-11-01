@@ -41,7 +41,7 @@ module Box
     alias_method :is_featured?, :is_featured
 
     def album_art_url
-      @album_art_url ||= data['album_art_url']
+      @album_art_url ||= data['albumArtUrl']
     end
 
     def artist_detail_url

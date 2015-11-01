@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Box
   class Partner
 
@@ -7,32 +9,35 @@ module Box
     attr_reader :data, :response
 
     def self.login
-      new
+      new.login
     end
 
     def initialize
+    end
+
+    def login
       @response ||= Server.post(params, opts, request_opts)
-      @data ||= @response.result
+      @data ||= @response.data
     end
 
     def station_skip_limit
-      @station_skip_limit ||= data['stationSkipLimit']
+      data['stationSkipLimit']
     end
 
     def partner_id
-      @partner_id ||= data['partnerId']
+      data['partnerId']
     end
 
     def partner_auth_token
-      @partner_auth_token ||= data['partnerAuthToken']
+      data['partnerAuthToken']
     end
 
     def sync_time
-      @sync_time ||= data['syncTime']
+      data['syncTime']
     end
 
     def station_skip_unit
-      @station_skip_unit ||= data['stationSkipUnit']
+      data['stationSkipUnit']
     end
 
     private

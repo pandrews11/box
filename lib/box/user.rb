@@ -7,15 +7,25 @@ module Box
     attr_writer :error
 
     def self.login(username, password)
-      new(username, password)
+      new(username, password).login
     end
 
     def initialize(username, password)
       @username = username
       @password = password
+    end
 
+    def login
       @response ||= Server.post(params, opts, request_opts)
       @data ||= @response.result
+    end
+
+    # Blow up memoization
+    def authenticate
+      @partner = Partner.login
+      @response = Server.post(params, opts, request_opts)
+      @data = @response.result
+      @stations = Collectors::StationCollector.for self
     end
 
     def stations
@@ -31,33 +41,33 @@ module Box
     end
 
     def user_auth_token
-      @user_auth_token ||= data['userAuthToken']
+      data['userAuthToken']
     end
 
     def has_audio_ads
-      @has_audio_ads ||= data['hasAudioAds']
+      data['hasAudioAds']
     end
     alias_method :has_audio_ads?, :has_audio_ads
 
     def user_id
-      @user_id ||= data['userId']
+      data['userId']
     end
 
     def max_stations_allowed
-      @max_stations_allowed ||= data['maxStationsAllowed']
+      data['maxStationsAllowed']
     end
 
     def user_profile_url
-      @user_profile_url ||= data['userProfileUrl']
+      data['userProfileUrl']
     end
 
     def can_listen
-      @can_listen ||= data['canListen']
+      data['canListen']
     end
     alias_method :can_listen?, :can_listen
 
     def error
-      @error ||@response.error
+      @error || @response.error
     end
 
     private
