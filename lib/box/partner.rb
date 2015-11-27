@@ -17,7 +17,8 @@ module Box
 
     def login
       @response ||= Server.post(params, opts, request_opts)
-      @data ||= @response.data
+      @data ||= @response.result
+      self
     end
 
     def station_skip_limit

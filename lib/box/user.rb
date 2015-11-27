@@ -18,6 +18,7 @@ module Box
     def login
       @response ||= Server.post(params, opts, request_opts)
       @data ||= @response.result
+      self
     end
 
     # Blow up memoization
