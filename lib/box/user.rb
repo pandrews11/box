@@ -10,6 +10,12 @@ module Box
       new(username, password).login
     end
 
+    def find_station(id)
+      Collectors::StationCollector.for(self).each do |s|
+        return s if s.station_id == id
+      end
+    end
+
     def initialize(username, password)
       @username = username
       @password = password
