@@ -28,7 +28,7 @@ module Box
       private
 
       def error?
-          user.error = response.error if response.error?
+        user.error = response.error if response.error?
       end
 
       def response

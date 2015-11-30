@@ -18,7 +18,7 @@ module Box
       def playlist_params
         {
           :method => 'station.getPlaylist',
-          :user_id =>user.user_id,
+          :user_id => user.user_id,
           :partner_id => user.partner.partner_id,
           :auth_token => user.user_auth_token
         }
