@@ -11,6 +11,7 @@ module Box
     end
 
     def find_station(id)
+      return nil if id.blank?
       Collectors::StationCollector.for(self).each do |s|
         return s if s.station_id == id
       end
