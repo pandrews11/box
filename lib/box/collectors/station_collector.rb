@@ -6,7 +6,9 @@ module Box
       attr_reader :user
 
       def self.for(user)
-        new(user).retrieve_stations
+        user.with_auth do
+          new(user).retrieve_stations
+        end
       end
 
       def initialize(user)
@@ -14,8 +16,6 @@ module Box
       end
 
       def retrieve_stations
-        return [] if error?
-
         stations = []
 
         data['stations'].each do |s|
@@ -23,13 +23,12 @@ module Box
         end
 
         stations
+
+      rescue Box::BoxResponseError
+        []
       end
 
       private
-
-      def error?
-        user.error = response.error if response.error?
-      end
 
       def response
         @response ||= Server.post params, opts, request_opts

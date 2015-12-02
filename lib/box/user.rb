@@ -78,6 +78,13 @@ module Box
       @error || @response.error
     end
 
+    def with_auth(&block)
+      yield
+    rescue Box::BoxResponseError
+      authenticate!
+      yield
+    end
+
     private
 
     def request_opts

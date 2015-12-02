@@ -5,7 +5,9 @@ module Box
       attr_reader :data, :station
 
       def self.for(station)
-        new(station).retrieve_songs
+        station.user.with_auth do
+          new(station).retrieve_songs
+        end
       end
 
       def initialize(station)
@@ -15,14 +17,15 @@ module Box
       def retrieve_songs
         @data ||= station.get_playlist
 
-        return [] if @data.error.present?
-
         songs = []
         @data.result['items'].each do |s|
           songs << Song.create(s)
         end
 
         songs
+
+      rescue Box::BoxResponseError
+        []
       end
     end
   end

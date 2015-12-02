@@ -1,6 +1,8 @@
 require 'json'
 
 module Box
+  class BoxResponseError < StandardError; end
+
   class Response
 
     attr_reader :data, :error
@@ -14,6 +16,7 @@ module Box
 
       unless success?
         @error = Error.for data['code']
+        raise BoxResponseError, @error
       end
     end
 
