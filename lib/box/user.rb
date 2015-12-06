@@ -37,7 +37,7 @@ module Box
     end
 
     def stations
-      @stations ||= Collectors::StationCollector.for self
+      Collectors::StationCollector.for self
     end
 
     def partner

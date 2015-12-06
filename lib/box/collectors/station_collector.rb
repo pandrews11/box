@@ -31,7 +31,7 @@ module Box
       private
 
       def response
-        @response ||= Server.post params, opts, request_opts
+        Server.post params, opts, request_opts
       end
 
       def data

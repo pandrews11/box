@@ -28,7 +28,8 @@ module Box
         {
           :userAuthToken => user.user_auth_token,
           :syncTime => Time.now.to_i - user.sync_time,
-          :stationToken => station_token
+          :stationToken => station_token,
+          :includeTrackLength => true
         }
       end
 

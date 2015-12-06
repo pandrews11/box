@@ -7,7 +7,7 @@ module Box
     include Stations::Delete
     include Stations::Playlist
 
-    attr_reader :data, :user, :playlist
+    attr_reader :data, :user
 
     def self.create(data, user)
       new(data, user)
@@ -27,7 +27,7 @@ module Box
     end
 
     def playlist
-      @playlist ||= Collectors::SongCollector.for self
+      Collectors::SongCollector.for self
     end
 
     def station_id

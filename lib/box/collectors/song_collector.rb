@@ -15,10 +15,9 @@ module Box
       end
 
       def retrieve_songs
-        @data ||= station.get_playlist
-
         songs = []
-        @data.result['items'].each do |s|
+
+        station.get_playlist.result['items'].each do |s|
           songs << Song.create(s)
         end
 
