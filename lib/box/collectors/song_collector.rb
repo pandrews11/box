@@ -22,9 +22,6 @@ module Box
         end
 
         songs
-
-      rescue Box::BoxResponseError
-        []
       end
     end
   end

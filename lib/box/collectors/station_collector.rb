@@ -23,9 +23,6 @@ module Box
         end
 
         stations
-
-      rescue Box::BoxResponseError
-        []
       end
 
       private
