@@ -81,7 +81,7 @@ module Box
     def with_auth(&block)
       yield
     rescue Box::BoxResponseError
-      authenticate!
+      authenticate
       yield
     end
 
